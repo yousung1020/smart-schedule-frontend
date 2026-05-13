@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- 배경 딥 인디고 ~ 퍼플 그라데이션 -->
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+    
+    <!-- 스마트 포인트 시안 ~ 스카이블루 그라데이션 -->
+    <linearGradient id="accent-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22D3EE" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+    
+    <!-- 부드러운 그림자 효과 -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- 앱 아이콘 배경 (둥근 사각형) -->
+  <rect x="48" y="48" width="416" height="416" rx="96" fill="url(#bg-gradient)" filter="url(#shadow)" />
+
+  <!-- 캘린더 상단 헤더 (반투명 화이트) -->
+  <path d="M 48 144 Q 48 48 144 48 L 368 48 Q 464 48 464 144 L 464 170 L 48 170 Z" fill="#ffffff" fill-opacity="0.15" />
+
+  <!-- 캘린더 바인딩 링 -->
+  <rect x="150" y="70" width="24" height="60" rx="12" fill="#ffffff" fill-opacity="0.95" />
+  <rect x="338" y="70" width="24" height="60" rx="12" fill="#ffffff" fill-opacity="0.95" />
+
+  <!-- 일정 완료 체크마크 -->
+  <path d="M 160 290 L 230 360 L 360 210" 
+        fill="none" stroke="#ffffff" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- "Smart" 포인트 도트 -->
+  <circle cx="360" cy="210" r="32" fill="url(#accent-gradient)" />
+</svg>

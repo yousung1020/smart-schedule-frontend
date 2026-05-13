@@ -1,121 +1,96 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useSearchParams, Outlet } from 'react-router-dom';
+import { MainLayout } from './components/layout/MainLayout';
+import { DashboardPage } from './pages/DashboardPage';
+import { TasksPage } from './pages/TasksPage';
+import { LoginPage } from './pages/LoginPage';
+import { SignUpPage } from './pages/SignUpPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { KakaoCallbackHandler } from './components/auth/KakaoCallbackHandler';
+import { PublicRoute } from './components/auth/PublicRoute';
 
-function App() {
-  const [count, setCount] = useState(0)
+// 보호된 레이아웃 래퍼
+const ProtectedLayout = () => {
+  const { accessToken, isLoading } = useAuth();
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+
+  if (!accessToken) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <MainLayout>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
+    </MainLayout>
+  );
+};
 
-      <div className="ticks"></div>
+// 루트 경로 로직 처리 (주로 OAuth 콜백용)
+const RootHandler = () => {
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get('code');
+  const { accessToken, isLoading } = useAuth();
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
+  // OAuth 코드가 있으면 처리
+  if (code && !accessToken) {
+    return <KakaoCallbackHandler />;
+  }
 
-export default App
+  // 로그인 상태면 대시보드 표시, 아니면 로그인 페이지로 리다이렉트
+  if (!accessToken) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <MainLayout>
+      <Suspense fallback={<div>Loading...</div>}>
+        <DashboardPage />
+      </Suspense>
+    </MainLayout>
+  );
+};
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* 공개 인증 경로 */}
+          <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+          <Route path="/signup" element={<PublicRoute><SignUpPage /></PublicRoute>} />
+          <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+          <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
+
+          {/* OAuth 콜백을 위해 루트 경로는 별도로 처리 */}
+          <Route path="/" element={<RootHandler />} />
+
+          {/* 보호된 경로 래퍼 */}
+          <Route element={<ProtectedLayout />}>
+            <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/calendar" element={<div>Calendar Page (Coming Soon)</div>} />
+            <Route path="/analytics" element={<div>Analytics Page (Coming Soon)</div>} />
+            <Route path="/settings" element={<div>Settings Page (Coming Soon)</div>} />
+          </Route>
+          
+          {/* 예외 처리 */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+};
+
+export default App;
