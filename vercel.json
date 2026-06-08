@@ -1,3 +1,9 @@
 {
+  "build": {
+    "env": {
+      "VITE_API_BASE_URL": "https://smart-schedule.kro.kr/api/v1",
+      "VITE_KAKAO_REDIRECT_URI": "https://smart-schedule-frontend-neon.vercel.app/"
+    }
+  },
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
