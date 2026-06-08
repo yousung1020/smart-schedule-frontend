@@ -71,9 +71,7 @@ export const AnalyticsPage = () => {
           title="전체 완료율" 
           value={`${completionStats.rate}%`} 
           icon={<CheckCircle2 className="text-emerald-500" />}
-          trend="+5.2%"
           trendUp={true}
-          description="지난 달 대비 상승"
         />
         <AnalyticsStatCard 
           title="완료된 일정" 
