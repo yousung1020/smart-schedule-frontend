@@ -70,7 +70,7 @@ export const LoginPage = () => {
       <div className="w-full max-w-[440px] px-6 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 flex flex-col">
         <div className="text-center mb-6 md:mb-8">
           <p className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-blue-500 font-extrabold text-xl md:text-2xl tracking-tight">
-            스마트 스케줄러와 함께 오늘을 관리하세요
+            스마트 스케줄과 함께 오늘을 관리하세요
           </p>
         </div>
 

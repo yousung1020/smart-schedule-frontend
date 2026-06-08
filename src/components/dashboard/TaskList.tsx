@@ -4,9 +4,11 @@ import type { Schedule } from '../../types';
 interface TaskListProps {
   tasks: Schedule[];
   isDashboard?: boolean;
+  onToggleCompletion?: (id: number, currentStatus: boolean) => void;
+  onEditSchedule?: (task: Schedule) => void;
 }
 
-export const TaskList = ({ tasks, isDashboard = false }: TaskListProps) => {
+export const TaskList = ({ tasks, isDashboard = false, onToggleCompletion, onEditSchedule }: TaskListProps) => {
   return (
     <div className="w-full">
       {/* 열 헤더 */}
@@ -21,15 +23,29 @@ export const TaskList = ({ tasks, isDashboard = false }: TaskListProps) => {
 
       <div className="space-y-1">
         {tasks.map(task => (
-          <div key={task.id} className="grid grid-cols-[64px_1fr_180px_100px_120px_40px] items-center p-4 hover:bg-slate-50/80 rounded-2xl transition-all border border-transparent hover:border-slate-100 group">
-            {/* 1. 체크박스 */}
+          <div 
+            key={task.id} 
+            className="grid grid-cols-[64px_1fr_180px_100px_120px_40px] items-center p-4 hover:bg-slate-50/80 rounded-2xl transition-all border border-transparent hover:border-slate-100 group"
+          >
+            {/* 일정 완료 상태 체크박스 */}
             <div className="flex justify-start pl-1">
-              <div className={`w-5 h-5 border-2 rounded-md cursor-pointer transition-all
-                ${task.isCompleted ? 'bg-indigo-600 border-indigo-600 shadow-sm' : 'border-slate-300 hover:border-indigo-400'}`}>
-              </div>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation(); // 행 클릭 이벤트 전파 차단
+                  onToggleCompletion?.(task.id, task.isCompleted);
+                }}
+                className={`w-5 h-5 border-2 rounded-md cursor-pointer transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500/20
+                  ${task.isCompleted ? 'bg-indigo-600 border-indigo-600 shadow-sm' : 'border-slate-300 hover:border-indigo-400'}`}
+              >
+                {task.isCompleted && (
+                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </button>
             </div>
             
-            {/* 2. 타이틀 */}
+            {/* 일정 타이틀 및 카테고리 표시 */}
             <div className="min-w-0 pr-4">
               <p className={`font-bold text-base truncate ${task.isCompleted ? 'line-through text-slate-400' : 'text-slate-900'}`}>
                 {task.title}
@@ -39,7 +55,7 @@ export const TaskList = ({ tasks, isDashboard = false }: TaskListProps) => {
               </span>
             </div>
 
-            {/* 3. 날짜/시간 */}
+            {/* 수행 예정 날짜 및 시간 */}
             <div className={`flex flex-col ${isDashboard ? 'pl-20' : ''}`}>
               {task.time.includes('오늘') ? (
                 <>
@@ -56,7 +72,7 @@ export const TaskList = ({ tasks, isDashboard = false }: TaskListProps) => {
               )}
             </div>
 
-            {/* 4. 구분 (중요도 왼쪽으로 이동) */}
+            {/* 일정 구분 (시작 및 마감) */}
             <div className="flex justify-center">
               <span className={`px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm border
                 ${task.type === 'deadline' 
@@ -66,14 +82,20 @@ export const TaskList = ({ tasks, isDashboard = false }: TaskListProps) => {
               </span>
             </div>
 
-            {/* 4. 우선순위 */}
+            {/* 중요도 우선순위 뱃지 */}
             <div className="flex justify-center">
               <PriorityBadge priority={task.priority} />
             </div>
 
-            {/* 5. 액션 버튼 */}
+            {/* 상세 관리 액션 버튼 */}
             <div className="flex justify-end">
-              <button className="text-slate-300 hover:text-slate-600 transition-colors p-1 hover:bg-white rounded-lg">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation(); // 행 클릭 이벤트 전파 차단
+                  onEditSchedule?.(task);
+                }}
+                className="text-slate-300 hover:text-slate-600 transition-colors p-1 hover:bg-white rounded-lg cursor-pointer"
+              >
                 <MoreVertical size={18} />
               </button>
             </div>

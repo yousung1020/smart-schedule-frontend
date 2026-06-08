@@ -3,9 +3,10 @@ import type { Category } from '../../types';
 
 interface CategoryListProps {
   categories: Category[];
+  onAddCategory?: () => void;
 }
 
-export const CategoryList = ({ categories }: CategoryListProps) => {
+export const CategoryList = ({ categories, onAddCategory }: CategoryListProps) => {
   return (
     <div className="space-y-4">
       {categories.map(cat => (
@@ -17,7 +18,10 @@ export const CategoryList = ({ categories }: CategoryListProps) => {
           <span className="font-semibold text-slate-500">{cat.value}%</span>
         </div>
       ))}
-      <button className="w-full mt-4 flex items-center justify-center gap-2 py-2 border border-dashed border-slate-200 rounded-xl text-slate-400 text-sm hover:border-indigo-400 hover:text-indigo-600 transition-all">
+      <button 
+        onClick={onAddCategory}
+        className="w-full mt-4 flex items-center justify-center gap-2 py-2 border border-dashed border-slate-200 rounded-xl text-slate-400 text-sm hover:border-indigo-400 hover:text-indigo-600 transition-all"
+      >
         <Plus size={16} />
         <span>새 카테고리</span>
       </button>

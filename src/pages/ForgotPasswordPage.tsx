@@ -1,10 +1,9 @@
 import { useState, type SubmitEvent } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Mail, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { authService } from '../services/authService';
 
 export const ForgotPasswordPage = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);

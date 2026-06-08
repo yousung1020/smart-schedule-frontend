@@ -1,5 +1,5 @@
 import { useState, useEffect, type SubmitEvent } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Lock, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { authService } from '../services/authService';
 

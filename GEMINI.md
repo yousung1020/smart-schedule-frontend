@@ -1,9 +1,8 @@
 # Goal
 
-- Accurately implement given requirements
-- Write practical and maintainable frontend code
-- Avoid unnecessary abstraction or over-engineering
-- Maintain production-ready quality
+- Implement requirements accurately
+- Write practical, maintainable, production-ready backend code
+- Avoid unnecessary abstraction, refactoring, or over-engineering
 
 ---
 
@@ -13,157 +12,122 @@
 - Do not add features beyond the requested scope
 - Avoid speculative implementations
 
-2. Simplicity First
-- Prefer straightforward implementations
-- Avoid unnecessary patterns, layers, or abstractions
+2. Simplicity & Maintainability
+- Prefer simple and practical solutions
+- Avoid excessive patterns, layers, and abstractions
+- Prioritize readability over cleverness
+- Keep responsibilities cohesive and practical
 
-3. Implement Only What Is Needed
-- Do not over-design for hypothetical future expansion
-- Keep architecture flexible but lightweight
+3. Consistency First
+- Follow existing project patterns and conventions
+- Reuse established structures when possible
+- Maintain architectural consistency
 
-4. Readability First
-- Use clear naming and predictable flow
-- Prioritize maintainability over cleverness
+4. Stability & Reliability
+- Handle null, exception, and failure cases properly
+- Prevent obvious runtime risks
+- Ensure predictable application behavior
 
-5. Practical Component Design
-- Reference SRP, but prioritize cohesion and maintainability
-- Avoid excessive component splitting
-- Keep related logic close when reasonable
+5. Standard & Current Practices
+- Prefer well-established Spring/JPA patterns
+- Use web search when necessary to verify:
+  - framework conventions
+  - library usage
+  - deprecated APIs
+  - security/performance best practices
 
-6. Stability & UX
-- Handle loading, error, and empty states
-- Prevent obvious runtime failures
-- Ensure reasonable fallback behavior
-
-7. Explain Before Executing
-- Before creating/modifying files or executing commands:
+6. Explain Before Executing
+- Before modifying files or running commands:
   - explain intent and purpose
   - describe affected files/components
-  - provide relevant code context first
+  - provide relevant code context when necessary
 
 ---
 
-# Frontend Rules
+# Backend Rules
 
-## React Rules
-- Use React 19 features when appropriate
-- Prefer functional components and hooks
-- Avoid class components
-- Keep render logic simple and readable
+## Architecture
+- Maintain Controller -> Service -> Repository flow
+- Keep business logic inside the Service layer
+- Avoid unnecessary layer separation
 
-## Component Rules
-- Components should primarily focus on UI rendering
-- Extract reusable business logic into hooks/services
-- Avoid oversized components when possible
-- Do not split components excessively without clear benefit
+## Transactions
+- Use transactions only where necessary
+- Prefer method-level transactions
+- Keep transaction scope minimal and explicit
 
-## State Management
-- Prefer local state first
-- Use Context only for:
-  - authentication
-  - theme
-  - global UI state
+## JPA & Database
+- Be careful about:
+  - N+1 problems
+  - unnecessary queries
+  - inefficient fetching
+  - improper lazy loading usage
+- Use fetch strategies intentionally
+- Avoid unnecessary DTO/Mapper separation
 
-Avoid unnecessary global state.
+## Exception Handling
+- Handle exceptions consistently
+- Prefer unchecked exceptions
+- Prefer Optional or explicit exceptions over returning null
+- Never expose internal errors directly to clients
 
-## Data Fetching
-- API calls must exist only in service modules
-- Components must never directly call Axios/fetch
-- Async orchestration should be handled in hooks when appropriate
+## Security
+- Validate authentication and authorization flow carefully
+- Avoid trusting client-side data blindly
+- Handle sensitive data safely
 
-## Routing
-- Use React Router 7 conventions
-- Protect authenticated routes appropriately
-- Keep route structure predictable and maintainable
-
-## Styling Rules
-- Use Tailwind CSS v4 utilities directly
-- Avoid excessive custom CSS
-- Prefer composition over deeply nested utility chains
-- Maintain responsive mobile-first layouts
-
-## UI/UX Rules
-Every async UI must provide:
-- loading state
-- error state
-- empty state (when applicable)
-
-User-triggered async actions should provide feedback:
-- toast
-- inline feedback
-- modal feedback
+## API Design
+- Keep request/response structures predictable
+- Maintain consistency with existing API conventions
+- Validate incoming requests properly
 
 ## Performance
-- Prevent unnecessary re-renders
-- Memoize only when beneficial
 - Avoid premature optimization
+- Prevent obvious bottlenecks
+- Optimize only when there is clear value
 
 ---
 
-# Directory Rules
+# Recommended Structure
 
-## components/
-Reusable UI components only.
-
-## pages/
-Route-level page composition.
-
-## hooks/
-Reusable business logic and side effects.
-
-## services/
-API communication layer.
-
-## context/
-Global shared state only.
-
-## utils/
-Pure utility/helper functions.
-
-## types/
-Shared interfaces and types.
-
----
-
-# API Rules
-
-- Use centralized API service modules
-- Keep API contracts consistent with backend DTOs
-- Normalize API errors before UI handling
-- Never expose raw server errors directly to users
-
-## Authentication
-- JWT-based authentication
-- Access token stored according to project requirements
-- Inject auth headers through Axios interceptors
+```txt
+src/
+ ├── controller/
+ ├── service/
+ ├── repository/
+ ├── domain/
+ ├── dto/
+ ├── config/
+ ├── exception/
+ ├── security/
+ └── util/
+```
 
 ---
 
 # Work Process
 
 ## 1. Requirement Summary
-- Briefly summarize only the core requirements
+- Summarize core requirements briefly
 
 ## 2. Design
-- List required components/hooks/services
-- Explain responsibility and data flow simply
+- List required classes/services/components
+- Explain responsibilities and data flow briefly
 
 ## 3. Code Implementation
-- Write executable and practical code
-- Avoid unnecessary abstraction/refactoring
-- Keep implementation understandable
+- Write executable and understandable code
+- Avoid unnecessary abstraction or refactoring
 
-## 4. Self Verification (Required)
+## 4. Self Verification
 Check for:
 - logical issues
 - missing edge cases
 - maintainability concerns
-- unnecessary complexity
 - performance issues
-- security concerns
-- responsive/mobile UX issues
+- security risks
+- transaction or query issues
 
-Review once more before modifying code.
+Review once more before finalizing code.
 
 ---
 
@@ -177,22 +141,20 @@ Review once more before modifying code.
    - acceptable parts
    - improvements needed (if any)
 5. Implementation Notes
-  - Briefly explain the overall code flow and key implementation decisions
-  - Explain important or non-obvious parts when necessary
-  - Focus on practical understanding rather than detailed theory
-  - Keep explanations concise and relevant
+   - explain overall flow and key decisions briefly
+   - explain important or non-obvious parts when necessary
+   - keep explanations concise and practical
+
 ---
 
 # Anti-Patterns
-
 Avoid:
 - excessive refactoring
 - unnecessary abstraction
 - over-engineering
-- massive global state
-- direct API calls inside components
-- deeply nested component trees
-- business logic directly inside JSX
+- unnecessary DTO/Mapper splitting
+- business logic inside controllers
+- overly complex query structures
 - premature optimization
 - adding libraries without clear necessity
 
@@ -200,12 +162,9 @@ Avoid:
 
 # Final Standard
 
-Always evaluate:
-
-- Is this production-usable?
-- Is this easy to understand?
-- Is this appropriately simple?
-- Is the structure maintainable?
-- Does the UX remain stable and predictable?
-
-Maintain these standards consistently.
+Always ensure:
+- production usability
+- readability
+- practical simplicity
+- maintainable structure
+- stable and predictable behavior

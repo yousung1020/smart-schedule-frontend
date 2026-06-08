@@ -7,6 +7,9 @@ import { LoginPage } from './pages/LoginPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
+import { AnalyticsPage } from './pages/AnalyticsPage';
+import { CalendarPage } from './pages/CalendarPage';
+import { SettingsPage } from './pages/SettingsPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { KakaoCallbackHandler } from './components/auth/KakaoCallbackHandler';
 import { PublicRoute } from './components/auth/PublicRoute';
@@ -80,9 +83,9 @@ const App = () => {
           {/* 보호된 경로 래퍼 */}
           <Route element={<ProtectedLayout />}>
             <Route path="/tasks" element={<TasksPage />} />
-            <Route path="/calendar" element={<div>Calendar Page (Coming Soon)</div>} />
-            <Route path="/analytics" element={<div>Analytics Page (Coming Soon)</div>} />
-            <Route path="/settings" element={<div>Settings Page (Coming Soon)</div>} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Route>
           
           {/* 예외 처리 */}

@@ -5,7 +5,7 @@ import {
   Calendar, 
   CheckSquare, 
   BarChart3, 
-  Settings,
+  User,
   LogOut
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -49,8 +49,8 @@ export const Sidebar = () => {
         />
         <NavItem 
           to="/settings"
-          icon={<Settings size={20} />} 
-          label="설정" 
+          icon={<User size={20} />} 
+          label="마이페이지" 
           active={currentPath === '/settings'} 
         />
       </nav>
